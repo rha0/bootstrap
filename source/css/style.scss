@@ -6,3 +6,348 @@ $img-url: "../images";
 .mCenter {
     margin: 0 auto;
 }
+
+* {
+    @include box-sizing;
+    @include ani();
+}
+
+
+input,
+select,
+textarea {
+    @include border-radius(0);
+    /*
+    @media all and (max-width: 1199px) {
+        appearance: none;
+        -moz-appearance: none;
+        -ms-appearance: none;
+        -webkit-appearance: none;
+
+        &::-ms-expand {
+            display: none;
+        }
+    }
+*/
+}
+
+a {
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+/*font*/
+html {
+    min-width: $min-width;
+    max-width: 100%;
+    font-size: 14px;
+    min-height: 100%;
+}
+
+@media (max-width:360px) {
+    html {
+        font-size: 14px;
+    }
+}
+@media (min-width:361px) and (max-width:480px) {
+    html {
+        font-size: 16px;
+    }
+}
+@media (min-width:481px) {
+    html {
+        font-size: 18px;
+    }
+}
+@media (min-width:1200px) {
+    html {
+        font-size: 14px;
+    }
+}
+
+.sr-only {
+    position: absolute !important;
+    overflow: hidden !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    clip: rect(0, 0, 0, 0) !important;
+    border: 0 !important;
+}
+
+.sr-only-focusable:active,
+.sr-only-focusable:focus {
+    position: static;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+}
+
+/* mixin */
+@mixin flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: -webkit-flex;
+    -webkit-align-item: center;
+    -webkit-justify-content: center;
+}
+
+@mixin full {
+    width: 100%;
+    height: 100%;
+}
+
+@mixin pmz($padding, $margin) {
+    margin: $margin;
+    padding: $padding;
+}
+
+@mixin full-position {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+@mixin zero {
+    font-size:0;
+}
+
+@mixin fsize($fsize) {
+    font-size: $fsize;
+    line-height: $fsize * 1.4;
+}
+
+@mixin border($width, $color, $border-style: solid) {
+    border: {
+        width: $width;
+        color: $color;
+        style: $border-style;
+    }
+}
+
+@mixin box-sizing($type:border-box) {
+    -webkit-box-sizing: $type;
+    -moz-box-sizing: $type;
+    box-sizing: $type;
+}
+
+@mixin border-radiuss($radius) {
+    -webkit-border-radius: $radius;
+    -moz-border-radius: $radius;
+    border-radius: $radius;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+}
+
+@mixin drop-shadow($x:0,$y: 2px, $blur: 2px, $spread: 0, $alpha: 0.25) {
+    -webkit-box-shadow: $x $y $blur $spread rgba(0, 0, 0, $alpha);
+    -moz-box-shadow: $x $y $blur $spread rgba(0, 0, 0, $alpha);
+    box-shadow: $x $y $blur $spread rgba(0, 0, 0, $alpha);
+}
+
+@mixin text-shadow($string:0 1px 3px rgba(0, 0, 0, 0.25)) {
+    text-shadow: $string;
+}
+
+@mixin opacity($opacity) {
+    -webkit-opacity: $opacity;
+    -moz-opacity: $opacity;
+    opacity: $opacity;
+}
+
+@mixin gradient($startColor:#eee, $ingColor: #eee, $endColor: white) {
+    background-color: $startColor;
+    background: -webkit-linear-gradient(top, $startColor, $ingColor, $endColor);
+    background: -moz-linear-gradient(top, $startColor, $ingColor, $endColor);
+    background: -ms-linear-gradient(top, $startColor, $ingColor, $endColor);
+    background: -o-linear-gradient(top, $startColor, $ingColor, $endColor);
+}
+
+@mixin gradienth($startColor:#eee, $ingColor: #eee, $endColor: white) {
+    background-color: $startColor;
+    background: -webkit-linear-gradient(left, $startColor, $ingColor, $endColor);
+    // background: -moz-linear-gradient(left, $startColor, $ingColor, $endColor);
+    // background: -ms-linear-gradient(left, $startColor, $ingColor, $endColor);
+    // background: -o-linear-gradient(left, $startColor, $ingColor, $endColor);
+}
+
+@mixin ani($time:0.2s) {
+    -webkit-transition: all $time ease;
+    -moz-transition: all $time ease;
+    -o-transition: all $time ease;
+    -ms-transition: all $time ease;
+    transition: all $time ease;
+}
+
+@mixin container($con-width) {
+    position:relative;
+    display:inline-block;
+    margin: 0 auto;
+    // width: $con-width;
+    height: 100%;
+}
+
+@mixin blur($blur) {
+    filter: blur($blur);
+    -webkit-filter: blur($blur);
+    -moz-filter: blur($blur);
+    -o-filter: blur($blur);
+}
+
+@mixin ellipse() {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@mixin placeholder($size, $color) {
+
+    &::-webkit-input-placeholder {
+        color: $color;
+        font-size: rem($size);
+
+        @media all and ($screen-size-pc) {
+            font-size: $size;
+        }
+
+    }
+
+    &:-moz-placeholder {
+        color: $color;
+        font-size: rem($size);
+
+        @media all and ($screen-size-pc) {
+            font-size: $size;
+        }
+    }
+
+    &::-ms-input-placeholder {
+        color: $color;
+        font-size: rem($size);
+
+        @media all and ($screen-size-pc) {
+            font-size: $size;
+        }
+    }
+}
+
+@mixin backcover($background) {
+    background: {
+        image: $background;
+        repeat: no-repeat;
+        size: cover;
+        width: 100%;
+        height: auto;
+        position:center center;
+    }
+}
+
+
+
+
+
+@mixin column-width ($value: 150px) {
+    -webkit-column-width: $value;
+    -moz-column-width: $value;
+    column-width: $value;
+}
+
+@mixin circle {
+    @include border-radiuss(100%);
+}
+
+@mixin list {
+    list-style: none;
+    padding-left: 0;
+}
+
+@mixin hidden {
+    overflow: hidden;
+}
+
+@mixin block {
+    display: block;
+}
+
+@mixin inline-block {
+    display: inline-block;
+}
+
+@mixin transform($property) {
+    -webkit-transform: $property;
+    -ms-transform: $property;
+    transform: $property;
+}
+
+@mixin clearfix {
+
+    &:after {
+        display: block;
+        content: "";
+        clear: both;
+    }
+}
+
+@mixin pointer {
+    cursor: pointer;
+}
+
+@mixin textarea {
+    overflow: auto;
+    resize: vertical;
+}
+
+
+@mixin center {
+    text-align: center;
+}
+
+@mixin bold {
+    font-weight: 800;
+}
+
+@mixin no-deco {
+    text-decoration: none;
+}
+
+@mixin absolute {
+    position: absolute;
+}
+
+@mixin relative {
+    position: relative;
+}
+
+@mixin resizable($direction) {
+    overflow: auto; // Per CSS3 UI, `resize` only applies when `overflow` isn't `visible`
+    resize: $direction; // Options: horizontal, vertical, both
+}
+
+@mixin pagination($padding-y, $padding-x, $font-size, $line-height, $border-radius) {
+    .page-link {
+      padding: $padding-y $padding-x;
+      @include font-size($font-size);
+      line-height: $line-height;
+    }
+  
+    .page-item {
+        &:first-child {
+            .page-link {
+                @include border-left-radius($border-radius);
+            }
+        }
+        &:last-child {
+            .page-link {
+                @include border-right-radius($border-radius);
+            }
+        }
+    }
+}
