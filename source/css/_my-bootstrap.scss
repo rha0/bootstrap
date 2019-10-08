@@ -1,0 +1,396 @@
+
+// COLOR
+$main-color: $green - 20%;
+
+// _variables.scss line 78
+$theme-colors2: ()
+!default;
+$theme-colors2: map-merge((
+    // "primary": $main-color, 
+    "secondary": $secondary, 
+    "success": $success, 
+    "info": $info, 
+    "warning": $warning, 
+    "danger": $danger, 
+    "light": $light, 
+    "dark": $dark
+    ), 
+    $theme-colors2);
+
+
+
+// _buttons.scss line 59
+@each $color, $value in $theme-colors2 {
+    .btn-#{$color} {
+        @include button-variant($value, $value);
+    }
+}
+
+// _pagination.scss
+.page-link {
+    background-color: transparent;
+    border: none;
+    color: $gray-800;
+    @include border-radius($border-radius);
+
+    &:hover {
+        color: $main-color;
+        background-color: $gray-300;
+    }
+}
+
+.page-item {
+
+    &:first-child {
+        .page-link {
+            margin-left: 0;
+            @include border-radius($border-radius);
+        }
+    }
+    &:last-child {
+        .page-link {
+            @include border-radius($border-radius);
+        }
+    }
+}
+
+
+
+// _variables.scss line 223
+$grid-gutter-width: 16px;
+
+
+// _grid-framework.scss
+@mixin make-grid-columns2($columns: $grid-columns, $gutter: $grid-gutter-width, $breakpoints: $grid-breakpoints) {
+    // Common properties for all breakpoints
+    %grid-column {
+      position: relative;
+      width: 100%;
+      padding-right: $gutter / 2;
+      padding-left: $gutter / 2;
+    }
+  
+    @each $breakpoint in map-keys($breakpoints) {
+      $infix: breakpoint-infix($breakpoint, $breakpoints);
+  
+      // Allow columns to stretch full width below their breakpoints
+      @for $i from 1 through $columns {
+        .col#{$infix}-#{$i} {
+          @extend %grid-column;
+        }
+      }
+      .col#{$infix},
+      .col#{$infix}-auto {
+        @extend %grid-column;
+      }
+  
+      @include media-breakpoint-up($breakpoint, $breakpoints) {
+        // Provide basic `.col-{bp}` classes for equal-width flexbox columns
+        .col#{$infix} {
+          flex-basis: 0;
+          flex-grow: 1;
+          max-width: 100%;
+        }
+        .col#{$infix}-auto {
+          flex: 0 0 auto;
+          width: auto;
+          max-width: 100%; // Reset earlier grid tiers
+        }
+  
+        @for $i from 1 through $columns {
+          .col#{$infix}-#{$i} {
+            @include make-col($i, $columns);
+          }
+        }
+  
+        .order#{$infix}-first { order: -1; }
+  
+        .order#{$infix}-last { order: $columns + 1; }
+  
+        @for $i from 0 through $columns {
+          .order#{$infix}-#{$i} { order: $i; }
+        }
+  
+        // `$columns - 1` because offsetting by the width of an entire row isn't possible
+        @for $i from 0 through ($columns - 1) {
+          @if not ($infix == "" and $i == 0) { // Avoid emitting useless .offset-0
+            .offset#{$infix}-#{$i} {
+              @include make-col-offset($i, $columns);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  
+
+// mixins/_grid.scss
+
+@mixin make-container2($gutter: $grid-gutter-width) {
+    width: 100%;
+    padding-right: $gutter / 2;
+    padding-left: $gutter / 2;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  
+
+
+
+
+// _grid.scss
+
+
+@if $enable-grid-classes {
+    .container {
+      @include make-container2();
+      @include make-container-max-widths();
+    }
+  }
+  
+  // Fluid container
+  //
+  // Utilizes the mixin meant for fixed width containers, but with 100% width for
+  // fluid, full width layouts.
+  
+  @if $enable-grid-classes {
+    .container-fluid {
+      @include make-container2();
+    }
+  }
+  
+  // Row
+  //
+  // Rows contain and clear the floats of your columns.
+  
+  @if $enable-grid-classes {
+    .row {
+      @include make-row();
+    }
+  
+    // Remove the negative margin from default .row, then the horizontal padding
+    // from all immediate children columns (to prevent runaway style inheritance).
+    .no-gutters {
+      margin-right: 0;
+      margin-left: 0;
+  
+      > .col,
+      > [class*="col-"] {
+        padding-right: 0;
+        padding-left: 0;
+      }
+    }
+  }
+  
+  // Columns
+  //
+  // Common styles for small and large grid columns
+  
+  @if $enable-grid-classes {
+    @include make-grid-columns2();
+  }
+
+
+// _modal.scss
+// Container that the modal scrolls within
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: $zindex-modal;
+  display: none;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  outline: 0;
+}
+
+.modal-dialog-scrollable {
+  display: flex; // IE10/11
+  max-height: calc(100% - #{$modal-dialog-margin * 2});
+
+  .modal-content {
+    max-height: calc(100vh - #{$modal-dialog-margin * 2}); // IE10/11
+    overflow: hidden;
+  }
+
+  .modal-header,
+  .modal-footer {
+    flex-shrink: 0;
+  }
+
+  .modal-body {
+    overflow-y: auto;
+  }
+}
+
+
+// _tables.scss
+.table {
+  width: 100%;
+  margin-bottom: $spacer;
+  color: $table-color;
+  background-color: $table-bg; // Reset for nesting within parents with `background-color`.
+
+  th,
+  td {
+    padding: $table-cell-padding;
+    vertical-align: top;
+    border-top: $table-border-width solid $table-border-color;
+  }
+
+  thead th {
+    vertical-align: bottom;
+    border-bottom: (2 * $table-border-width) solid $table-border-color;
+  }
+
+  tbody + tbody {
+    border-top: (2 * $table-border-width) solid $table-border-color;
+  }
+}
+
+// Hover states for `.table-hover`
+// Note: this is not available for cells or rows within `thead` or `tfoot`.
+.table-hover {
+  $hover-background: darken($background, 5%);
+
+  .table-#{$state} {
+    @include hover {
+      background-color: $hover-background;
+
+      > td,
+      > th {
+        background-color: $hover-background;
+      }
+    }
+  }
+}
+
+
+// Checkboxes and radios
+//
+// Base class takes care of all the key behavioral aspects.
+
+.custom-control {
+  position: relative;
+  display: block;
+  min-height: $font-size-base * $line-height-base;
+  padding-left: $custom-control-gutter + $custom-control-indicator-size;
+}
+
+// switches
+//
+// Tweak a few things for switches
+
+.custom-switch {
+  padding-left: $custom-switch-width + $custom-control-gutter;
+
+  .custom-control-label {
+    &::before {
+      left: -($custom-switch-width + $custom-control-gutter);
+      width: $custom-switch-width;
+      pointer-events: all;
+      // stylelint-disable-next-line property-blacklist
+      border-radius: $custom-switch-indicator-border-radius;
+    }
+
+    &::after {
+      top: calc(#{(($font-size-base * $line-height-base - $custom-control-indicator-size) / 2)} + #{$custom-control-indicator-border-width * 2});
+      left: calc(#{-($custom-switch-width + $custom-control-gutter)} + #{$custom-control-indicator-border-width * 2});
+      width: $custom-switch-indicator-size;
+      height: $custom-switch-indicator-size;
+      background-color: $custom-control-indicator-border-color;
+      // stylelint-disable-next-line property-blacklist
+      border-radius: $custom-switch-indicator-border-radius;
+      @include transition(transform .15s ease-in-out, $custom-forms-transition);
+    }
+  }
+
+  .custom-control-input:checked ~ .custom-control-label {
+    &::after {
+      background-color: $custom-control-indicator-bg;
+      transform: translateX($custom-switch-width - $custom-control-indicator-size);
+    }
+  }
+
+  .custom-control-input:disabled {
+    &:checked ~ .custom-control-label::before {
+      background-color: $custom-control-indicator-checked-disabled-bg;
+    }
+  }
+}
+
+
+// Base class
+//
+// Kickstart any navigation component with a set of style resets. Works with
+// `<nav>`s or `<ul>`s.
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+
+.nav-link {
+  display: block;
+  padding: $nav-link-padding-y $nav-link-padding-x;
+
+  @include hover-focus {
+    text-decoration: none;
+  }
+
+  // Disabled state lightens text
+  &.disabled {
+    color: $nav-link-disabled-color;
+    pointer-events: none;
+    cursor: default;
+  }
+}
+
+//
+// Tabs
+//
+
+.nav-tabs {
+  border-bottom: $nav-tabs-border-width solid $nav-tabs-border-color;
+
+  .nav-item {
+    margin-bottom: -$nav-tabs-border-width;
+  }
+
+  .nav-link {
+    border: $nav-tabs-border-width solid transparent;
+    @include border-top-radius($nav-tabs-border-radius);
+
+    @include hover-focus {
+      border-color: $nav-tabs-link-hover-border-color;
+    }
+
+    &.disabled {
+      color: $nav-link-disabled-color;
+      background-color: transparent;
+      border-color: transparent;
+    }
+  }
+
+  .nav-link.active,
+  .nav-item.show .nav-link {
+    color: $nav-tabs-link-active-color;
+    background-color: $nav-tabs-link-active-bg;
+    border-color: $nav-tabs-link-active-border-color;
+  }
+
+  .dropdown-menu {
+    // Make dropdown border overlap tab border
+    margin-top: -$nav-tabs-border-width;
+    // Remove the top rounded corners here since there is a hard edge above the menu
+    @include border-top-radius(0);
+  }
+}
+
+
+  
